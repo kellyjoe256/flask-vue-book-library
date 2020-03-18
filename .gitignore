@@ -4,3 +4,6 @@ __pycache__
 node_modules
 /venv
 .env
+*.db
+*.sqlite
+*.sqlite3
