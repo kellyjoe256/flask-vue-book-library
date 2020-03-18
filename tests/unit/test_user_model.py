@@ -11,14 +11,41 @@ def test_new_user(new_user):
     WHEN a new User is created
     THEN check the username and hashed_password fields are defined correctly
     """
-    assert_that(new_user.username).is_equal_to('admin')
-    assert_that(new_user.salt).is_length(32)
-    assert_that(new_user.hashed_password).is_not_equal_to('password')
+    user, _ = new_user
+    assert_that(repr(user)).matches(r"\<User '[\w_-]+?'\>")
+    assert_that(user.salt).is_length(32)
+    assert_that(len(user.hashed_password)).is_greater_than(50)
 
 
-def test_that_the_repr_is_defined_for_user_model(new_user):
+def test_that_correct_password_returns_true(new_user):
     """
     GIVEN a User model
-    THEN check the `repr` representation of the model is defined
+    WHEN a new User is created
+    THEN check that a correct password returns TRUE
     """
-    assert_that(repr(new_user)).is_equal_to('<User admin>')
+    user, user_data = new_user
+    assert_that(user.verify_password(user_data.get('password'))).is_true()
+
+
+def test_that_an_incorrect_password_returns_false(new_user):
+    """
+    GIVEN a User model
+    WHEN a new User is created
+    THEN check that an incorrect password returns FALSE
+    """
+    user, _ = new_user
+    assert_that(user.verify_password('xxddxx')).is_false()
+
+
+def test_json_representation_of_user(new_user):
+    """
+    GIVEN a User model
+    WHEN a new User is created
+    THEN check the json representation of the new User
+    """
+    user, user_data = new_user
+    user_json = user.json()
+    assert_that(user_json).contains_value(user_data.get('username'))
+    assert_that(user_json).contains_key('id', 'username', 'created_at')
+    assert_that(user_json).does_not_contain(
+        'salt', 'password', 'hashed_password')

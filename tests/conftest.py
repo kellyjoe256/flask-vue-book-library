@@ -13,4 +13,4 @@ def app():
 @pytest.fixture(scope='module')
 def new_user():
     user_data = dict(username='admin', password='password')
-    return User(**user_data)
+    return User(**user_data), user_data
