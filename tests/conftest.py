@@ -25,9 +25,9 @@ def init_database():
     with app.app_context():
         db.create_all()
 
-    # Insert user data
-    user = User(username='admin', password='password')
-    user.save()
+        # Create user
+        user = User(username='admin', password='password')
+        user.save()
 
     yield db
 

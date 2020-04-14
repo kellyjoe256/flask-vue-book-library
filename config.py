@@ -12,6 +12,12 @@ class Config(object):
     PROPAGATE_EXCEPTIONS = True
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_TOKEN_LOCATION = ('cookies',)
+    JWT_ACCESS_COOKIE_NAME = 'access_token'
+    JWT_ACCESS_COOKIE_PATH = '/api'
+    JWT_COOKIE_CSRF_PROTECT = False
+    JWT_ERROR_MESSAGE_KEY = 'message'
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=3600)
 
     @staticmethod
     def init_app(app):
@@ -38,6 +44,7 @@ class ProductionConfig(Config):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'db.sqlite')
+    JWT_COOKIE_SECURE = True
 
 
 config = {

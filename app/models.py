@@ -12,7 +12,18 @@ class TimestampMixin(object):
         db.DateTime, onupdate=datetime.now, default=datetime.now)
 
 
-class User(db.Model, TimestampMixin):
+class SaveDeleteMixin(object):
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+class User(db.Model, TimestampMixin, SaveDeleteMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
