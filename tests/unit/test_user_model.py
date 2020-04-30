@@ -50,7 +50,7 @@ def test_json_representation_of_user(new_user):
     user, user_data = new_user
     user_json = user.json()
 
-    acceptable_keys = 'id', 'username', 'created_at'
+    acceptable_keys = 'id', 'username', 'created_at', 'is_admin'
     unacceptable_keys = 'salt', 'password', 'hashed_password'
 
     assert_that(user_json).contains_value(user_data.get('username'))
