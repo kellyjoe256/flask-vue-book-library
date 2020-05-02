@@ -13,10 +13,10 @@ def test_json_representation_of_author():
     THEN check the json representation of the new Author
     """
     author_data = dict(
-        first_name = 'John',
-        last_name = 'Doe',
-        gender = 'M',
-        about = 'Lorem ipsum dolor sit amet.',
+        first_name='John',
+        last_name='Doe',
+        gender='M',
+        about='Lorem ipsum dolor sit amet.',
     )
     author = Author(**author_data)
     author_json = author.json()

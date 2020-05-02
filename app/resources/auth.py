@@ -1,3 +1,4 @@
+import json
 from flask import jsonify, make_response
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import (jwt_required, create_access_token,
@@ -7,7 +8,7 @@ from app.models import User
 from app.helpers import convert_to_dict
 
 
-class LoginResource(Resource):
+class LoginAPI(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('username', required=True, trim=True,
                         help='Username is required')
@@ -30,19 +31,19 @@ class LoginResource(Resource):
         return response
 
 
-class LogoutResource(Resource):
+class LogoutAPI(Resource):
 
     @jwt_required
     def post(self):
-        response = make_response(convert_to_dict(get_jwt_identity()))
+        response = make_response(json.loads(get_jwt_identity()))
 
         unset_jwt_cookies(response)
 
         return response
 
 
-class MeResource(Resource):
+class MeAPI(Resource):
 
     @jwt_required
     def get(self):
-        return convert_to_dict(get_jwt_identity())
+        return json.loads(get_jwt_identity())

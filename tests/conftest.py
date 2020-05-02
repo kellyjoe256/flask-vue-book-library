@@ -12,20 +12,6 @@ user_data = [
 @pytest.fixture
 def app():
     app = create_app(config_name)
-    return app
-
-
-@pytest.fixture(scope='module')
-def new_user():
-    data = user_data[0]
-    return User(**data), data
-
-
-@pytest.fixture(scope='module')
-def init_database():
-    app = create_app(config_name)
-
-    # Create the database and the database table
     with app.app_context():
         db.create_all()
 
@@ -34,7 +20,13 @@ def init_database():
             user = User(**data)
             user.save()
 
-    yield db
+        yield app
 
-    with app.app_context():
+        db.session.remove()
         db.drop_all()
+
+
+@pytest.fixture(scope='module')
+def new_user():
+    data = user_data[0]
+    return User(**data), data

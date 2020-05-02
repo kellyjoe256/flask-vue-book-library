@@ -11,7 +11,7 @@ from app.helpers import convert_to_dict
 base_route = '/api/auth'
 
 
-def test_that_login_returns_correct_status_code(client, init_database):
+def test_that_login_returns_correct_status_code(client):
     """
     GIVEN a Flask application
     WHEN the `/api/auth/login` route is posted to (POST) with valid credentials
@@ -24,7 +24,7 @@ def test_that_login_returns_correct_status_code(client, init_database):
     assert_that(response.status_code).is_equal_to(200)
 
 
-def test_that_login_returns_correct_content_type(client, init_database):
+def test_that_login_returns_correct_content_type(client):
     """
     GIVEN a Flask application
     WHEN the `/api/auth/login` route is posted to (POST) with valid credentials
@@ -37,7 +37,7 @@ def test_that_login_returns_correct_content_type(client, init_database):
     assert_that(response.headers['Content-Type']).contains('application/json')
 
 
-def test_that_login_returns_a_valid_token(client, init_database):
+def test_that_login_returns_a_valid_token(client):
     """
     GIVEN a Flask application
     WHEN the `/api/auth/login` route is posted to (POST) with valid credentials
@@ -72,7 +72,7 @@ def test_that_login_fails_with_invalid_credentials(client):
         .is_less_than_or_equal_to(500)
 
 
-def test_that_logout_returns_correct_status_code(client, init_database):
+def test_that_logout_returns_correct_status_code(client):
     """
     GIVEN a Flask application
     WHEN the `/api/auth/logout` route is posted to (POST) with valid credentials
@@ -88,7 +88,7 @@ def test_that_logout_returns_correct_status_code(client, init_database):
     assert_that(response.status_code).is_equal_to(200)
 
 
-def test_that_logout_removes_token(client, init_database):
+def test_that_logout_removes_token(client):
     """
     GIVEN a Flask application
     WHEN the `/api/auth/logout` route is posted to (POST) with valid credentials
@@ -136,7 +136,7 @@ def test_logout_with_invalid_credentials(client):
         .is_less_than_or_equal_to(500)
 
 
-def test_that_me_returns_correct_status_code(client, init_database):
+def test_that_me_returns_correct_status_code(client):
     """
     GIVEN a Flask application
     WHEN the `/api/auth/me` route is called (GET) with valid credentials
@@ -152,7 +152,7 @@ def test_that_me_returns_correct_status_code(client, init_database):
     assert_that(response.status_code).is_equal_to(200)
 
 
-def test_that_me_returns_current_user_data(client, init_database):
+def test_that_me_returns_current_user_data(client):
     """
     GIVEN a Flask application
     WHEN the `/api/auth/me` route is called (GET) with valid credentials

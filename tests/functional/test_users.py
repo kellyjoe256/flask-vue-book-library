@@ -7,10 +7,13 @@ from app.models import User
 from app.helpers import convert_to_dict
 
 base_route = '/api/users'
-data = dict(username='new_user', password='password')
 
 
-def test_that_users_deleted_correctly(client, init_database):
+def user_data():
+    return dict(username='new_user', password='password')
+
+
+def test_that_users_deleted_correctly(client):
     """
     GIVEN a Flask application
     WHEN the `/api/users/:id` route is called (DELETE) with valid credentials
@@ -21,7 +24,7 @@ def test_that_users_deleted_correctly(client, init_database):
 
     client.set_cookie('localhost', 'access_token', access_token)
     # create new user
-    response = client.post(base_route, data=data)
+    response = client.post(base_route, json=user_data())
 
     # delete created user
     response_data = convert_to_dict(response.data)
@@ -32,7 +35,7 @@ def test_that_users_deleted_correctly(client, init_database):
     assert_that(response.headers['Content-Type']).contains('application/json')
 
 
-def test_that_users_updated_correctly(client, init_database):
+def test_that_users_updated_correctly(client):
     """
     GIVEN a Flask application
     WHEN the `/api/users/:id` route is called (PUT) with valid credentials
@@ -43,14 +46,15 @@ def test_that_users_updated_correctly(client, init_database):
     access_token = create_access_token(identity=user)
 
     client.set_cookie('localhost', 'access_token', access_token)
+    data = user_data()
     # create new user
-    response = client.post(base_route, data=data)
+    response = client.post(base_route, json=data)
 
     # update created user
     response_data = convert_to_dict(response.data)
     data['password'] = 'new_password'
     response = client.put(
-        '{}/{}'.format(base_route, response_data.get('id')), data=data)
+        '{}/{}'.format(base_route, response_data.get('id')), json=data)
 
     assert_that(response.status_code).is_equal_to(200)
     assert_that(response.headers['Content-Type']).contains('application/json')
@@ -60,7 +64,7 @@ def test_that_users_updated_correctly(client, init_database):
     assert_that(response_data).contains_key('id', 'username', 'is_admin')
 
 
-def test_that_getting_existing_user_works(client, init_database):
+def test_that_getting_existing_user_works(client):
     """
     GIVEN a Flask application
     WHEN the `/api/users/:id` route is called (GET) with valid credentials
@@ -81,7 +85,7 @@ def test_that_getting_existing_user_works(client, init_database):
     assert_that(response_data).contains_key('id', 'username', 'is_admin')
 
 
-def test_that_getting_non_existent_user_fails(client, init_database):
+def test_that_getting_non_existent_user_fails(client):
     """
     GIVEN a Flask application
     WHEN the `/api/users/:id` route is called (GET) with valid credentials
@@ -97,7 +101,7 @@ def test_that_getting_non_existent_user_fails(client, init_database):
     assert_that(response.status_code).is_equal_to(404)
 
 
-def test_that_users_are_created_correctly(client, init_database):
+def test_that_users_are_created_correctly(client):
     """
     GIVEN a Flask application
     WHEN the `/api/users` route is posted (POST) to with valid credentials
@@ -107,7 +111,7 @@ def test_that_users_are_created_correctly(client, init_database):
     access_token = create_access_token(identity=user)
 
     client.set_cookie('localhost', 'access_token', access_token)
-    response = client.post(base_route, data=data)
+    response = client.post(base_route, json=user_data())
 
     assert_that(response.status_code).is_equal_to(201)
     assert_that(response.headers['Content-Type']).contains('application/json')
@@ -117,7 +121,24 @@ def test_that_users_are_created_correctly(client, init_database):
     assert_that(response_data).contains_key('id', 'username', 'is_admin')
 
 
-def test_user_creation_required_fields(client, init_database):
+def test_that_user_creation_fails_if_username_exists(client):
+    """
+    GIVEN a Flask application
+    WHEN the `/api/users` route is posted (POST) to with valid credentials
+    BUT with existing username
+    THEN check that the response meets the set conditions
+    """
+    user = User.query.filter(User.is_admin == True).first()
+    access_token = create_access_token(identity=user)
+
+    client.set_cookie('localhost', 'access_token', access_token)
+    client.post(base_route, json=user_data())
+    response = client.post(base_route, json=user_data())
+
+    assert_that(response.status_code).is_equal_to(409)
+
+
+def test_user_creation_required_fields(client):
     """
     GIVEN a Flask application
     WHEN the `/api/users` route is posted (POST) to with valid credentials
@@ -129,16 +150,17 @@ def test_user_creation_required_fields(client, init_database):
 
     client.set_cookie('localhost', 'access_token', access_token)
 
+    data = user_data()
     required_fields = ['username', 'password']
     for field in required_fields:
         del data[field]
-        response = client.post(base_route, data=data)
+        response = client.post(base_route, json=data)
 
         assert_that(response.status_code).is_greater_than_or_equal_to(400) \
-            .less_than(500)
+            .is_less_than(500)
 
 
-def test_that_users_are_listed_correctly(client, init_database):
+def test_that_users_are_listed_correctly(client):
     """
     GIVEN a Flask application
     WHEN the `/api/users` route is accessed (GET) with valid credentials
@@ -154,11 +176,14 @@ def test_that_users_are_listed_correctly(client, init_database):
     assert_that(response.headers['Content-Type']).contains('application/json')
 
     response_data = convert_to_dict(response.data)
-    users = response_data.get('items')
-    keys = ('page', 'pages', 'has_next', 'has_prev', 'items',)
 
-    assert_that(response_data).contains_key(*keys)
-    assert_that(users[0]).contains_key('id', 'username', 'is_admin')
+    assert_that(response_data).contains_key('data', 'links', 'meta')
+
+    links_keys = ('first', 'last', 'next', 'previous')
+    assert_that(response_data.get('links')).contains_key(*links_keys)
+
+    meta_keys = ('current_page', 'last_page', 'per_page', 'total')
+    assert_that(response_data.get('meta')).contains_key(*meta_keys)
 
 
 def test_that_all_fails_for_non_admin_user(client):
