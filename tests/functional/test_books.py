@@ -17,6 +17,8 @@ def book_data():
         publisher='East India Publishing Company',
         publication_date='2018-12-17',
         about='Lorem ipsum dolor sit amet.',
+        authors=[1, 2],
+        categories=[3, 1],
     )
 
 
@@ -174,7 +176,8 @@ def test_book_creation_required_fields(client):
 
     data = book_data()
     required_fields = ['isbn', 'title', 'num_of_pages',
-                       'publisher', 'publication_date', ]
+                       'publisher', 'publication_date',
+                       'authors', 'categories']
     for field in required_fields:
         del data[field]
         response = client.post(base_route, json=data)
