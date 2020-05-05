@@ -76,8 +76,9 @@ class User(db.Model, TimestampMixin, CRUDMixin):
         return dict(
             id=self.id,
             username=self.username,
-            created_at=str(self.created_at),
             is_admin=self.is_admin,
+            created_at=str(self.created_at),
+            updated_at=str(self.updated_at),
         )
 
 
@@ -109,10 +110,6 @@ class Category(db.Model, CRUDMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
 
-    # books = db.relationship('Book', secondary=books_categories,
-    #                              backref=db.backref('books',
-    #                                                 lazy=True))
-
     def __repr__(self):
         return '<Category {}>'.format(self.name)
 
@@ -130,7 +127,7 @@ class Author(db.Model, TimestampMixin, CRUDMixin):
     about = db.Column(db.Text, nullable=False)
 
     books = db.relationship('Book', secondary=books_authors,
-                            backref=db.backref('books', lazy=True))
+                            backref=db.backref('books', lazy='noload'))
 
     def __repr__(self):
         return '<Author {}>'.format(self.last_name + " " + self.first_name)
@@ -157,10 +154,10 @@ class Book(db.Model, TimestampMixin, CRUDMixin):
     about = db.Column(db.Text, nullable=False)
 
     authors = db.relationship('Author', secondary=books_authors,
-                              backref=db.backref('authors', lazy=True))
+                              backref=db.backref('authors', lazy='noload'))
     categories = db.relationship('Category', secondary=books_categories,
                                  backref=db.backref('categories',
-                                                    lazy=True))
+                                                    lazy='noload'))
 
     def __repr__(self):
         return '<Book {0}>'.format(self.title)

@@ -7,10 +7,12 @@ from app.helpers import is_admin, PaginationFormatter
 
 def user_rules():
     parser = reqparse.RequestParser()
-    parser.add_argument('username', required=True, trim=True,
-                        help='Username is required', location='json')
-    parser.add_argument('password', required=True, trim=True,
-                        help='Password is required', location='json')
+    parser.add_argument('username', required=True,
+                        type=inputs.regex(r'^[a-zA-Z0-9]+$'),
+                        trim=True, help='Username is required', location='json')
+    parser.add_argument('password', required=True,
+                        type=inputs.regex(r'^[A-Za-z@!~#$%^&*()-+\d]{8,}$'),
+                        trim=True, help='Password is required', location='json')
     parser.add_argument('is_admin', type=inputs.boolean, default=False,
                         location='json')
     return parser
@@ -63,6 +65,8 @@ class UserAPI(Resource):
 
         data = self.parser.parse_args()
         for key, value in data.items():
+            if key == 'username' and self.check_for_username(id, value):
+                return dict(message='Username already exists'), 409
             setattr(user, key, value)
         user.save()
 
@@ -73,3 +77,7 @@ class UserAPI(Resource):
         user.delete()
 
         return None, 204
+
+    def check_for_username(self, id, username):
+        return User.query.filter(User.id != id, User.username == username). \
+            first()

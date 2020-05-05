@@ -1,5 +1,6 @@
+import re
 from flask import request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, inputs, reqparse
 from flask_jwt_extended import create_access_token, jwt_required, jwt_optional
 from app.models import Category
 from app.helpers import PaginationFormatter
@@ -7,8 +8,9 @@ from app.helpers import PaginationFormatter
 
 def category_rules():
     parser = reqparse.RequestParser()
-    parser.add_argument('name', required=True, trim=True,
-                        help='Name is required', location='json')
+    parser.add_argument('name', required=True,
+                        type=inputs.regex(r'^[\w ]+$', re.IGNORECASE),
+                        trim=True, help='Name is required', location='json')
     return parser
 
 
@@ -18,16 +20,18 @@ class CategoryListAPI(Resource):
         self.parser = category_rules()
         super(CategoryListAPI, self).__init__()
 
-    @jwt_optional
     def get(self):
         page = request.args.get('page', 1, type=int)
         limit = request.args.get('limit', 10, type=int)
+        all = request.args.get('all', False, type=bool)
 
-        pagination = Category.query.paginate(page=page, per_page=limit,
-                                             error_out=False)
-        Categorys = [Category.json() for Category in pagination.items]
+        if all:
+            return [category.json() for category in self.all()]
 
-        return PaginationFormatter(pagination, Categorys).data
+        pagination = self.paginated(page, limit)
+        categories = [Category.json() for Category in pagination.items]
+
+        return PaginationFormatter(pagination, categories).data
 
     @jwt_required
     def post(self):
@@ -40,6 +44,13 @@ class CategoryListAPI(Resource):
 
         return category.json(), 201
 
+    def all(self):
+        return Category.query.order_by(Category.name).all()
+
+    def paginated(self, page, per_page):
+        return Category.query.order_by(Category.name). \
+            paginate(page=page, per_page=per_page, error_out=False)
+
 
 class CategoryAPI(Resource):
 
@@ -47,7 +58,6 @@ class CategoryAPI(Resource):
         self.parser = category_rules()
         super(CategoryAPI, self).__init__()
 
-    @jwt_optional
     def get(self, id):
         category = Category.find_or_fail(id)
 

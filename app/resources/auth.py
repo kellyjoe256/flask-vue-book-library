@@ -5,7 +5,6 @@ from flask_jwt_extended import (jwt_required, create_access_token,
                                 set_access_cookies, get_jwt_identity,
                                 unset_jwt_cookies)
 from app.models import User
-from app.helpers import convert_to_dict
 
 
 class LoginAPI(Resource):
@@ -35,8 +34,7 @@ class LogoutAPI(Resource):
 
     @jwt_required
     def post(self):
-        response = make_response(json.loads(get_jwt_identity()))
-
+        response = make_response()
         unset_jwt_cookies(response)
 
         return response

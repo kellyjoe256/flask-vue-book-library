@@ -3,12 +3,14 @@ import json
 from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 from config import config
 from app.models import db
 from app.routes import create_routes
 
 api = Api()
 jwt = JWTManager()
+cors = CORS(resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
 create_routes(api)
 
@@ -21,6 +23,7 @@ def create_app(config_name):
     api.init_app(app)
     db.init_app(app)
     jwt.init_app(app)
+    cors.init_app(app)
 
     @jwt.user_identity_loader
     def user_identity_lookup(user):
