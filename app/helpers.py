@@ -66,7 +66,9 @@ class PaginationFormatter(object):
         return '{}?{}'.format(self.base_url, self.qs)
 
     def last_link(self):
-        self.qs = 'page', self.pagination.pages
+        pages = self.pagination.pages
+        last_page = pages if pages else 1
+        self.qs = 'page', last_page
 
         return '{}?{}'.format(self.base_url, self.qs)
 
