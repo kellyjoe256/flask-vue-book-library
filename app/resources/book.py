@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource, inputs, reqparse
 from flask_jwt_extended import create_access_token, jwt_required, jwt_optional
 from sqlalchemy.orm import subqueryload
-from app.models import Book
+from app.models import Book, Author, Category
 from app.helpers import PaginationFormatter
 
 
@@ -20,7 +20,31 @@ def book_rules():
                         help='Publication date is required and must be a valid date', location='json')
     parser.add_argument('about', required=True, trim=True,
                         help='About is required', location='json')
+    parser.add_argument('authors', required=True, type=int, action='append',
+                        help='Author is required', location='json')
+    parser.add_argument('categories', required=True, type=int, action='append',
+                        help='Category is required', location='json')
     return parser
+
+
+def append_authors_to_book(book, authors):
+    if not authors:
+        return
+
+    for author_id in authors:
+        author = Author.find(author_id)
+        if author:
+            book.authors.append(author)
+
+
+def append_categories_to_book(book, categories):
+    if not categories:
+        return
+
+    for category_id in categories:
+        category = Category.find(category_id)
+        if category:
+            book.categories.append(category)
 
 
 class BookListAPI(Resource):
@@ -46,7 +70,12 @@ class BookListAPI(Resource):
         if Book.query.filter(Book.isbn == data.get('isbn')).first():
             return dict(message='ISBN already exists'), 409
 
+        authors = data.pop('authors', [])
+        categories = data.pop('categories', [])
+
         book = Book(**data)
+        append_authors_to_book(book, authors)
+        append_categories_to_book(book, categories)
         book.save()
 
         return book.json(), 201
@@ -73,8 +102,14 @@ class BookAPI(Resource):
         book = Book.find_or_fail(id)
 
         data = self.parser.parse_args()
+        authors = data.pop('authors', [])
+        categories = data.pop('categories', [])
+
         for key, value in data.items():
             setattr(book, key, value)
+
+        append_authors_to_book(book, authors)
+        append_categories_to_book(book, categories)
         book.save()
 
         return book.json()
