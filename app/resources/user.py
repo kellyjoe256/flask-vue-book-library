@@ -1,5 +1,5 @@
 from flask import request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, inputs, reqparse
 from flask_jwt_extended import (create_access_token, jwt_required)
 from app.models import User
 from app.helpers import is_admin, PaginationFormatter
@@ -11,7 +11,7 @@ def user_rules():
                         help='Username is required', location='json')
     parser.add_argument('password', required=True, trim=True,
                         help='Password is required', location='json')
-    parser.add_argument('is_admin', choices=(True, False), default=False,
+    parser.add_argument('is_admin', type=inputs.boolean, default=False,
                         location='json')
     return parser
 
