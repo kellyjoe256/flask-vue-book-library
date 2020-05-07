@@ -16,8 +16,10 @@ Vue.use(VueMeta, {
     refreshOnceOnNavigation: true,
 });
 
-new Vue({
-    router,
-    store,
-    render: (h) => h(App),
-}).$mount('#app');
+store.dispatch('auth/authenticate').then(() => {
+    new Vue({
+        router,
+        store,
+        render: (h) => h(App),
+    }).$mount('#app');
+});

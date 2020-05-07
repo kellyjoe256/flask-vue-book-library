@@ -2,14 +2,35 @@
     <div>
         <b-navbar toggleable="lg" type="light" variant="light">
             <b-container>
-                <b-navbar-brand href="#">Book Library</b-navbar-brand>
+                <!-- prettier-ignore -->
+                <router-link
+                    class="navbar-brand"
+                    :to="{ name: baseRoute }"
+                    exact
+                >{{ navBarBrandLabel }}</router-link>
 
                 <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
                 <b-collapse id="nav-collapse" is-nav>
                     <!-- Right aligned nav items -->
                     <b-navbar-nav class="ml-auto">
-                        <b-nav-item href="#">Login</b-nav-item>
+                        <!-- prettier-ignore -->
+                        <router-link
+                            v-if="user === null"
+                            class="nav-link"
+                            :to="{ name: 'login' }"
+                            exact
+                        >Login</router-link>
+                        <b-nav-item-dropdown v-if="user" right>
+                            <template v-slot:button-content>
+                                <strong>{{ username }}</strong>
+                            </template>
+                            <!-- prettier-ignore -->
+                            <b-dropdown-item
+                                href="#"
+                                @click="logout"
+                            >Logout</b-dropdown-item>
+                        </b-nav-item-dropdown>
                     </b-navbar-nav>
                 </b-collapse>
             </b-container>
@@ -18,7 +39,40 @@
 </template>
 
 <script>
+import _ from 'lodash';
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
     name: 'MainNav',
+    computed: {
+        ...mapGetters({
+            user: 'auth/user',
+        }),
+        username() {
+            const { username } = this.user;
+            return _.startCase(username);
+        },
+        baseRoute() {
+            return this.user ? 'dashboard' : 'index';
+        },
+        navBarBrandLabel() {
+            return this.user ? 'Dashboard' : 'Book Library';
+        },
+    },
+    methods: {
+        ...mapActions({
+            logoutAction: 'auth/logout',
+        }),
+        logout() {
+            this.logoutAction()
+                .then(() => {
+                    this.$router.replace({ name: 'login' });
+                })
+                // eslint-disable-next-line
+                .catch((e) => {
+                    this.$router.replace({ name: 'login' });
+                });
+        },
+    },
 };
 </script>
