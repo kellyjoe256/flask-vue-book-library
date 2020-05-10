@@ -24,6 +24,10 @@
                                 class="nav-link"
                                 :to="{ name: 'authors.index' }"
                             >Authors</b-link>
+                            <b-link
+                                class="nav-link"
+                                :to="{ name: 'books.index' }"
+                            >Books</b-link>
                             <b-nav-item-dropdown v-if="user" right>
                                 <template v-slot:button-content>
                                     <strong>{{ username }}</strong>

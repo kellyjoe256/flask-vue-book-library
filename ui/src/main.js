@@ -7,6 +7,7 @@ import Pagination from './components/Pagination.vue';
 import PaginationLimit from './components/PaginationLimit.vue';
 import router from './router';
 import store from './store';
+import filters from './filters';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import './assets/css/main.css';
@@ -17,6 +18,11 @@ Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(VueMeta, {
     refreshOnceOnNavigation: true,
+});
+
+// mixins
+Vue.mixin({
+    filters,
 });
 
 // custom components

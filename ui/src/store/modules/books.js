@@ -3,34 +3,31 @@ import _ from 'lodash';
 import http from '@/services/http';
 import { appendQueryString } from '@/utils/functions';
 
-const baseURL = 'authors';
+const baseURL = 'books';
 
 export default {
     namespaced: true,
     state: {
-        authors: [],
+        books: [],
     },
     getters: {
-        authors: (state) => state.authors,
+        books: (state) => state.books,
     },
     actions: {
-        async getAuthors({ commit }, queryString = '') {
+        async getBooks({ commit }, queryString = '') {
             const url = appendQueryString(baseURL, queryString);
 
             try {
                 const { data } = await http.get(url);
 
-                if (!queryString.includes('all')) {
-                    commit('SET_AUTHORS', data.data);
-                    commit('SET_PAGINATION', data, { root: true });
-                }
-
+                commit('SET_BOOKS', data.data);
+                commit('SET_PAGINATION', data, { root: true });
                 return Promise.resolve(data);
             } catch (error) {
                 return Promise.reject(error);
             }
         },
-        async saveAuthor({ dispatch }, payload) {
+        async saveBook({ dispatch }, payload) {
             const { id } = payload;
             const url = id ? `${baseURL}/${id}` : baseURL;
             const action = id ? 'edit' : 'add';
@@ -41,7 +38,12 @@ export default {
                 },
             };
 
-            const fields = ['first_name', 'last_name', 'gender', 'about'];
+            // prettier-ignore
+            const fields = [
+                'isbn', 'title', 'num_of_pages',
+                'publisher', 'publication_date',
+                'authors', 'categories', 'about',
+            ];
             try {
                 const { data } = await http.wrapper({
                     url,
@@ -52,7 +54,7 @@ export default {
 
                 const message = {
                     type: 'success',
-                    description: `Author ${action}ed successfully`,
+                    description: `Book ${action}ed successfully`,
                 };
 
                 dispatch('flashMessage', message, { root: true });
@@ -63,7 +65,7 @@ export default {
             }
         },
         // eslint-disable-next-line
-        async getAuthor({ commit }, id) {
+        async getBook({ commit }, id) {
             const url = `${baseURL}/${id}`;
 
             try {
@@ -74,13 +76,13 @@ export default {
                 return Promise.reject(error);
             }
         },
-        async deleteAuthor({ dispatch }, id) {
+        async deleteBook({ dispatch }, id) {
             try {
                 await http.delete(`${baseURL}/${id}`);
 
                 const message = {
                     type: 'success',
-                    description: 'Author deleted successfully',
+                    description: 'Book deleted successfully',
                 };
                 dispatch('flashMessage', message, { root: true });
 
@@ -91,8 +93,8 @@ export default {
         },
     },
     mutations: {
-        SET_AUTHORS(state, authors) {
-            state.authors = authors;
+        SET_BOOKS(state, books) {
+            state.books = books;
         },
     },
 };

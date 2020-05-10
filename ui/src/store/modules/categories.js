@@ -20,8 +20,11 @@ export default {
             try {
                 const { data } = await http.get(url);
 
-                commit('SET_CATEGORIES', data.data);
-                commit('SET_PAGINATION', data, { root: true });
+                if (!queryString.includes('all')) {
+                    commit('SET_CATEGORIES', data.data);
+                    commit('SET_PAGINATION', data, { root: true });
+                }
+
                 return Promise.resolve(data);
             } catch (error) {
                 return Promise.reject(error);

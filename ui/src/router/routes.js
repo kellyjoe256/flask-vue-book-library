@@ -19,6 +19,12 @@ const AuthorsListing = () => import('@/views/admin/authors/Listing');
 const AuthorsAdd = () => import('@/views/admin/authors/Add');
 const AuthorsEdit = () => import('@/views/admin/authors/Edit');
 
+// /admin/books
+const BooksIndex = () => import('@/views/admin/books/Index');
+const BooksListing = () => import('@/views/admin/books/Listing');
+const BooksAdd = () => import('@/views/admin/books/Add');
+const BooksEdit = () => import('@/views/admin/books/Edit');
+
 export default [
     {
         path: '/',
@@ -107,6 +113,40 @@ export default [
                         props: true,
                         name: 'authors.edit',
                         component: AuthorsEdit,
+                        meta: {
+                            authRequired: true,
+                        },
+                    },
+                ],
+            },
+            {
+                path: 'books',
+                component: BooksIndex,
+                meta: {
+                    authRequired: true,
+                },
+                children: [
+                    {
+                        path: '',
+                        name: 'books.index',
+                        component: BooksListing,
+                        meta: {
+                            authRequired: true,
+                        },
+                    },
+                    {
+                        path: 'add',
+                        name: 'books.add',
+                        component: BooksAdd,
+                        meta: {
+                            authRequired: true,
+                        },
+                    },
+                    {
+                        path: ':id/edit',
+                        props: true,
+                        name: 'books.edit',
+                        component: BooksEdit,
                         meta: {
                             authRequired: true,
                         },
