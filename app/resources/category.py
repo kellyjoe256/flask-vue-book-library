@@ -69,6 +69,8 @@ class CategoryAPI(Resource):
 
         data = self.parser.parse_args()
         for key, value in data.items():
+            if key == 'name' and self.check_for_name(id, value):
+                return dict(message='Category already exists'), 409
             setattr(category, key, value)
         category.save()
 
@@ -80,3 +82,8 @@ class CategoryAPI(Resource):
         category.delete()
 
         return None, 204
+
+    def check_for_name(self, id, name):
+        return Category.query. \
+            filter(Category.id != id, Category.name == name). \
+            first()
