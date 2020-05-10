@@ -20,7 +20,7 @@ class LoginAPI(Resource):
 
         user = User.query.filter(User.username == username).first()
         if not (user and user.verify_password(data.get('password'))):
-            return {'message': 'Invalid credentials'}, 401
+            return {'message': 'Username or Password incorrect'}, 401
 
         access_token = create_access_token(identity=user)
         response = make_response(jsonify(user.json()))
