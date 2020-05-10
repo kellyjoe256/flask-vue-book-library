@@ -41,6 +41,10 @@ def append_authors_to_book(book, authors):
     if not authors:
         return
 
+    if book.id:
+        book.authors = []
+        book.save()
+
     for author_id in authors:
         author = Author.find(author_id)
         if author:
@@ -50,6 +54,10 @@ def append_authors_to_book(book, authors):
 def append_categories_to_book(book, categories):
     if not categories:
         return
+
+    if book.id:
+        book.categories = []
+        book.save()
 
     for category_id in categories:
         category = Category.find(category_id)
