@@ -2,13 +2,15 @@
     <div id="app">
         <main-nav></main-nav>
         <!-- prettier-ignore -->
-        <b-container>
-            <b-alert
-                v-if="message != null"
-                :variant="message.type"
-                show
-                dismissible
-            >{{ message.description }}</b-alert>
+        <b-toast
+            v-if="message != null"
+            id="my-toast"
+            toaster="b-toaster-top-center"
+            :variant="message.type"
+            visible
+            solid
+        >{{ message.description }}</b-toast>
+        <b-container id="wrapper">
             <router-view />
         </b-container>
     </div>
@@ -29,9 +31,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.container {
-    padding-top: 1.5em;
-}
-</style>

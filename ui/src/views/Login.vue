@@ -13,7 +13,7 @@
                             id="username"
                             placeholder="Username"
                             v-model="form.username"
-                            required
+                            required trim lazy
                         ></b-form-input>
                     </b-form-group>
                     <b-form-group
@@ -26,7 +26,7 @@
                             type="password"
                             placeholder="Password"
                             v-model="form.password"
-                            required
+                            required trim lazy
                         ></b-form-input>
                     </b-form-group>
 

@@ -8,9 +8,22 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         message: null,
+        pagination: null,
     },
     getters: {
         message: (state) => state.message,
+        pagination: (state) => state.pagination,
+        pages: (state) => {
+            const { pagination } = state;
+
+            if (!pagination) {
+                return false;
+            }
+
+            const { meta } = pagination;
+
+            return meta.last_page;
+        },
     },
     actions: {
         flashMessage: ({ commit }, message) => {
@@ -18,7 +31,7 @@ export default new Vuex.Store({
 
             setTimeout(() => {
                 commit('CLEAR_MESSAGE');
-            }, 5000);
+            }, 5100);
         },
     },
     /* eslint-disable no-param-reassign */
@@ -29,6 +42,13 @@ export default new Vuex.Store({
 
         CLEAR_MESSAGE(state) {
             state.message = null;
+        },
+
+        SET_PAGINATION(state, { meta, links }) {
+            state.pagination = {
+                meta,
+                links,
+            };
         },
     },
     modules,

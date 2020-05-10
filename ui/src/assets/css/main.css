@@ -1,0 +1,32 @@
+#wrapper {
+    padding-top: 1.5em;
+}
+
+.table th,
+.table td {
+    padding: 0.4rem;
+}
+
+.table a {
+    display: inline-block;
+}
+
+.table a:first-child {
+    margin-right: 5px;
+}
+
+.table a:last-child {
+    margin-left: 5px;
+}
+
+.w-10 {
+    width: 10%;
+}
+
+.w-15 {
+    width: 15%;
+}
+
+.w-20 {
+    width: 20%;
+}
