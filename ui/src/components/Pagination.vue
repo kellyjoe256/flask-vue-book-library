@@ -45,16 +45,16 @@ export default {
     created() {
         eventBus.$on('change:limit', (limit) => {
             const currentQueryParams = this.queryParams;
+            const queryLinkParams = this.getLinkQueryParams();
 
             this.currentPage = 1;
             this.queryParams = {
+                ...queryLinkParams,
                 ...currentQueryParams,
                 page: 1,
                 limit,
             };
         });
-
-        this.getLinkQueryParams();
     },
     watch: {
         queryParams: {
@@ -96,7 +96,7 @@ export default {
             const { links } = this.pagination;
             const linkQueryParams = this.parseQueryStringParams(links.first);
 
-            this.queryParams = { ...linkQueryParams };
+            return linkQueryParams;
         },
         stringifyQueryParams(params) {
             let output = '';
@@ -111,7 +111,10 @@ export default {
         },
         changePage(page) {
             const currentQueryParams = this.queryParams;
+            const queryLinkParams = this.getLinkQueryParams();
+
             this.queryParams = {
+                ...queryLinkParams,
                 ...currentQueryParams,
                 page,
             };

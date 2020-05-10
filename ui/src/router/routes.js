@@ -13,6 +13,12 @@ const CategoriesListing = () => import('@/views/admin/categories/Listing');
 const CategoriesAdd = () => import('@/views/admin/categories/Add');
 const CategoriesEdit = () => import('@/views/admin/categories/Edit');
 
+// /admin/authors
+const AuthorsIndex = () => import('@/views/admin/authors/Index');
+const AuthorsListing = () => import('@/views/admin/authors/Listing');
+const AuthorsAdd = () => import('@/views/admin/authors/Add');
+const AuthorsEdit = () => import('@/views/admin/authors/Edit');
+
 export default [
     {
         path: '/',
@@ -67,6 +73,40 @@ export default [
                         props: true,
                         name: 'categories.edit',
                         component: CategoriesEdit,
+                        meta: {
+                            authRequired: true,
+                        },
+                    },
+                ],
+            },
+            {
+                path: 'authors',
+                component: AuthorsIndex,
+                meta: {
+                    authRequired: true,
+                },
+                children: [
+                    {
+                        path: '',
+                        name: 'authors.index',
+                        component: AuthorsListing,
+                        meta: {
+                            authRequired: true,
+                        },
+                    },
+                    {
+                        path: 'add',
+                        name: 'authors.add',
+                        component: AuthorsAdd,
+                        meta: {
+                            authRequired: true,
+                        },
+                    },
+                    {
+                        path: ':id/edit',
+                        props: true,
+                        name: 'authors.edit',
+                        component: AuthorsEdit,
                         meta: {
                             authRequired: true,
                         },

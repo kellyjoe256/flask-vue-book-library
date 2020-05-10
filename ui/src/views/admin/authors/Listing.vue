@@ -8,27 +8,33 @@
                 </b-col>
                 <b-col class="text-right">
                     <b-link
-                        :to="{ name: 'categories.add' }"
+                        :to="{ name: 'authors.add' }"
                         class="btn btn-outline-secondary"
-                    >Add Category</b-link>
+                    >Add Author</b-link>
                 </b-col>
             </b-row>
-            <template v-if="!categories.length">
-                <h1>No categories available</h1>
+            <template v-if="!authors.length">
+                <h1>No authors available</h1>
             </template>
             <template v-else>
                 <b-table
                     :fields="fields"
-                    :items="categories"
+                    :items="authors"
                     striped
                 >
-                    <template v-slot:cell(name)="data">
+                    <template v-slot:cell(first_name)="data">
                         {{ data.value }}
+                    </template>
+                    <template v-slot:cell(last_name)="data">
+                        {{ data.value }}
+                    </template>
+                    <template v-slot:cell(gender)="data">
+                        {{ data.value === 'M' ? 'Male' : 'Female' }}
                     </template>
                     <template v-slot:cell(id)="data">
                         <b-link
                             :to="{
-                                name: 'categories.edit',
+                                name: 'authors.edit',
                                 params: { id: data.value },
                             }"
                             class="text-info"
@@ -44,7 +50,7 @@
                 </b-table>
                 <!-- prettier-ignore -->
                 <pagination
-                    :fetchMethod="getCategories"
+                    :fetchMethod="getAuthors"
                 ></pagination>
             </template>
         </b-col>
@@ -55,19 +61,29 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-    name: 'CategoriesListing',
+    name: 'AuthorsListing',
     metaInfo: {
-        title: 'Categories',
+        title: 'Authors',
     },
     created() {
-        this.getCategories();
+        this.getAuthors();
     },
     data() {
         return {
             fields: [
                 {
-                    key: 'name',
+                    key: 'first_name',
+                    label: 'First Name',
                     sortable: true,
+                },
+                {
+                    key: 'last_name',
+                    label: 'Last Name',
+                    sortable: true,
+                },
+                {
+                    key: 'gender',
+                    label: 'Gender',
                 },
                 {
                     key: 'id',
@@ -78,13 +94,13 @@ export default {
     },
     computed: {
         ...mapGetters({
-            categories: 'categories/categories',
+            authors: 'authors/authors',
         }),
     },
     methods: {
         ...mapActions({
-            getCategories: 'categories/getCategories',
-            deleteCategory: 'categories/deleteCategory',
+            getAuthors: 'authors/getAuthors',
+            deleteAuthor: 'authors/deleteAuthor',
         }),
         erase(id) {
             // eslint-disable-next-line
@@ -92,9 +108,9 @@ export default {
                 return;
             }
 
-            this.deleteCategory(id)
+            this.deleteAuthor(id)
                 .then(() => {
-                    this.getCategories();
+                    this.getAuthors();
                 })
                 .catch((error) => {
                     console.log(error);
