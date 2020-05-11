@@ -69,15 +69,20 @@ class BookListAPI(Resource):
 
     def __init__(self):
         self.parser = book_rules()
+        self.sort_order = (Book.publication_date.desc(), Book.title,)
         super(BookListAPI, self).__init__()
 
     def get(self):
         page = request.args.get('page', 1, type=int)
         limit = request.args.get('limit', 10, type=int)
+        search = request.args.get('search', '', type=str)
 
-        sort_order = (Book.publication_date.desc(), Book.title,)
-        pagination = Book.query.order_by(*sort_order). \
-            paginate(page=page, per_page=limit, error_out=False)
+        pagination = None
+        if search.strip():
+            pagination = self.searched_books(search.strip(), page, limit)
+        else:
+            pagination = self.unsearched_books(page, limit)
+
         books = [book.json() for book in pagination.items]
 
         return PaginationFormatter(pagination, books).data
@@ -97,6 +102,18 @@ class BookListAPI(Resource):
         book.save()
 
         return book.json(), 201
+
+    def searched_books(self, search_value, page, limit):
+        value = '%{}%'.format(search_value)
+
+        return Book.query.filter(Book.title.like(value)). \
+            order_by(*self.sort_order). \
+            paginate(page=page, per_page=limit, error_out=False)
+    
+    def unsearched_books(self, page, limit):
+        return Book.query.order_by(*self.sort_order). \
+            paginate(page=page, per_page=limit, error_out=False)
+
 
 
 class BookAPI(Resource):
