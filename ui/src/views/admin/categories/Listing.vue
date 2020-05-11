@@ -42,11 +42,11 @@
                         </a>
                     </template>
                 </b-table>
-                <!-- prettier-ignore -->
-                <pagination
-                    :fetchMethod="getCategories"
-                ></pagination>
             </template>
+            <!-- prettier-ignore -->
+            <pagination
+                :fetchMethod="getCategories"
+            ></pagination>
         </b-col>
     </b-row>
 </template>

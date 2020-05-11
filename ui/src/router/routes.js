@@ -2,6 +2,7 @@
 const Index = () => import('@/views/Index');
 const Login = () => import('@/views/Login');
 const NotFound = () => import('@/views/NotFound');
+const BookDetails = () => import('@/views/BookDetails');
 
 // /admin
 const AdminIndex = () => import('@/views/admin/Index');
@@ -36,6 +37,12 @@ export default [
         path: '/',
         name: 'index',
         component: Index,
+    },
+    {
+        path: '/:id/book_details',
+        name: 'book.details',
+        props: true,
+        component: BookDetails,
     },
     {
         path: '/login',

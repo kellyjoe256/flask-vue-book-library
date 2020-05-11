@@ -22,9 +22,6 @@ import eventBus from '@/eventBus';
 export default {
     name: 'Pagination',
     props: {
-        limit: {
-            type: Number,
-        },
         fetchMethod: {
             type: Function,
             required: true,
@@ -33,7 +30,11 @@ export default {
     data() {
         return {
             currentPage: 1,
-            queryParams: {},
+            queryParams: {
+                page: 1,
+                limit: 10,
+                search: null,
+            },
         };
     },
     computed: {
@@ -43,6 +44,19 @@ export default {
         }),
     },
     created() {
+        eventBus.$on('search', (value) => {
+            const currentQueryParams = this.queryParams;
+            const queryLinkParams = this.getLinkQueryParams();
+
+            this.currentPage = 1;
+            this.queryParams = {
+                ...queryLinkParams,
+                ...currentQueryParams,
+                page: 1,
+                search: value,
+            };
+        });
+
         eventBus.$on('change:limit', (limit) => {
             const currentQueryParams = this.queryParams;
             const queryLinkParams = this.getLinkQueryParams();
@@ -103,8 +117,10 @@ export default {
 
             Object.entries(params).forEach((entry) => {
                 const [key, value] = entry;
-                const queryString = key + (value ? `=${value}` : '');
-                output += output ? `&${queryString}` : queryString;
+                if (value) {
+                    const queryString = `${key}=${value}`;
+                    output += output ? `&${queryString}` : queryString;
+                }
             });
 
             return output;

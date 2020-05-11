@@ -2,7 +2,7 @@
     <!-- prettier-ignore -->
     <b-form-select
         v-model="selected"
-        class="mb-3 w-15"
+        :class="`mb-3 ${sizeClass}`"
         :options="options"
         @change="changeLimit"
     ></b-form-select>
@@ -13,6 +13,12 @@ import eventBus from '@/eventBus';
 
 export default {
     name: 'PaginationLimit',
+    props: {
+        sizeClass: {
+            type: String,
+            default: 'w-15',
+        },
+    },
     data() {
         return {
             selected: 10,

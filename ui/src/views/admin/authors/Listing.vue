@@ -48,11 +48,11 @@
                         </a>
                     </template>
                 </b-table>
-                <!-- prettier-ignore -->
-                <pagination
-                    :fetchMethod="getAuthors"
-                ></pagination>
             </template>
+            <!-- prettier-ignore -->
+            <pagination
+                :fetchMethod="getAuthors"
+            ></pagination>
         </b-col>
     </b-row>
 </template>
