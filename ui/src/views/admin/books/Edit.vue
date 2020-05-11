@@ -36,8 +36,12 @@ export default {
         };
     },
     created() {
+        this.$Progress.start();
+
         this.getBook(this.id)
             .then((data) => {
+                this.$Progress.finish();
+
                 const authors = data.authors.map((author) => author.id);
                 const categories = data.categories.map((author) => author.id);
 
@@ -49,6 +53,8 @@ export default {
             })
             /* eslint-disable */
             .catch((error) => {
+                this.$Progress.fail();
+
                 const { status } = error;
                 if (status === 404) {
                     return this.$router.replace({
@@ -67,11 +73,15 @@ export default {
         save(data) {
             this.errors = {}; // clear previous errors if any
 
+            this.$Progress.start();
+
             this.saveBook(data)
                 .then(() => {
                     this.$router.push({ name: 'books.index' });
                 })
                 .catch((error) => {
+                    this.$Progress.fail();
+
                     const { data: errorData } = error;
                     if (errorData && typeof errorData.message === 'object') {
                         this.errors = errorData.message;

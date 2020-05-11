@@ -181,6 +181,7 @@ export default {
         const qs = 'all=true'; // query string
         const actions = [this.getAuthors, this.getCategories];
 
+        this.$Progress.start();
         // prettier-ignore
         Promise.all(
             actions.map((action) => (
@@ -191,12 +192,16 @@ export default {
             ))
         )
             .then((data) => {
+                this.$Progress.finish();
+
                 const [authors, categories] = data;
 
                 this.authors = authors;
                 this.categories = categories;
             })
             .catch((error) => {
+                this.$Progress.fail();
+
                 console.log(error);
             });
     },

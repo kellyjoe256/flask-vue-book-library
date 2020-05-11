@@ -43,12 +43,16 @@ export default {
                     password: 'Passwords must match',
                 };
             } else {
+                this.$Progress.start();
+
                 const fields = ['username', 'password', 'is_admin'];
                 this.saveUser(_.pick(data, fields))
                     .then(() => {
                         this.$router.push({ name: 'users.index' });
                     })
                     .catch((error) => {
+                        this.$Progress.fail();
+
                         const { data: errorData } = error;
                         if (errorData && typeof errorData.message === 'object') {
                             this.errors = errorData.message;

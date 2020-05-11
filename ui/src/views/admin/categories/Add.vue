@@ -34,11 +34,15 @@ export default {
         save(data) {
             this.errors = {}; // clear previous errors if any
 
+            this.$Progress.start();
+
             this.saveCategory(data)
                 .then(() => {
                     this.$router.push({ name: 'categories.index' });
                 })
                 .catch((error) => {
+                    this.$Progress.fail();
+
                     const { data: errorData } = error;
                     if (errorData && typeof errorData.message === 'object') {
                         this.errors = errorData.message;

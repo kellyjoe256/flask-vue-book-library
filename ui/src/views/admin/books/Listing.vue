@@ -112,11 +112,17 @@ export default {
                 return;
             }
 
+            this.$Progress.start();
+
             this.deleteBook(id)
                 .then(() => {
                     this.getBooks();
+
+                    this.$Progress.finish();
                 })
                 .catch((error) => {
+                    this.$Progress.fail();
+
                     console.log(error);
                 });
         },

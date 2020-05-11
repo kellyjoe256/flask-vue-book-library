@@ -58,6 +58,8 @@ export default {
             login: 'auth/login',
         }),
         onSubmit() {
+            this.$Progress.start();
+
             this.login(this.form)
                 .then(() => {
                     this.$router.replace({
@@ -65,6 +67,8 @@ export default {
                     });
                 })
                 .catch((response) => {
+                    this.$Progress.fail();
+
                     console.log(response);
                 });
         },

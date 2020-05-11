@@ -108,11 +108,17 @@ export default {
                 return;
             }
 
+            this.$Progress.start();
+
             this.deleteAuthor(id)
                 .then(() => {
                     this.getAuthors();
+
+                    this.$Progress.finish();
                 })
                 .catch((error) => {
+                    this.$Progress.fail();
+
                     console.log(error);
                 });
         },

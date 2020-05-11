@@ -1,6 +1,7 @@
 // @ts-nocheck
 import Vue from 'vue';
 import VueMeta from 'vue-meta';
+import VueProgressBar from 'vue-progressbar';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 import App from './App.vue';
 import Pagination from './components/Pagination.vue';
@@ -18,6 +19,19 @@ Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(VueMeta, {
     refreshOnceOnNavigation: true,
+});
+Vue.use(VueProgressBar, {
+    color: '#343434',
+    failedColor: '#dd4b39',
+    thickness: '4px',
+    transition: {
+        speed: '1s',
+        opacity: '0.9s',
+        termination: 600,
+    },
+    autoRevert: true,
+    location: 'top',
+    inverse: false,
 });
 
 // mixins

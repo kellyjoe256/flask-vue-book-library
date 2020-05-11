@@ -33,14 +33,20 @@ export default {
         };
     },
     created() {
+        this.$Progress.start();
+
         this.getUser(this.id)
             .then((data) => {
+                this.$Progress.finish();
+
                 this.form = {
                     ...data,
                 };
             })
             /* eslint-disable */
             .catch((error) => {
+                this.$Progress.fail();
+
                 const { status } = error;
                 if (status === 404) {
                     return this.$router.replace({
@@ -64,12 +70,16 @@ export default {
                     password: 'Passwords must match',
                 };
             } else {
+                this.$Progress.start();
+
                 const fields = ['id', 'username', 'password', 'is_admin'];
                 this.saveUser(_.pick(data, fields))
                     .then(() => {
                         this.$router.push({ name: 'users.index' });
                     })
                     .catch((error) => {
+                        this.$Progress.fail();
+
                         const { data: errorData } = error;
                         if (errorData && typeof errorData.message === 'object') {
                             this.errors = errorData.message;

@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <vue-progress-bar></vue-progress-bar>
         <main-nav></main-nav>
         <!-- prettier-ignore -->
         <b-toast
@@ -23,6 +24,22 @@ export default {
     name: 'App',
     components: {
         MainNav,
+    },
+    mounted() {
+        this.$Progress.start();
+
+        this.$router.beforeResolve((to, from, next) => {
+            //  start the progress bar
+            this.$Progress.start();
+
+            next();
+        });
+
+        // eslint-disable-next-line no-unused-vars
+        this.$router.afterEach((to, from) => {
+            //  finish the progress bar
+            this.$Progress.finish();
+        });
     },
     computed: {
         ...mapGetters({

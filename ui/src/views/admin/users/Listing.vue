@@ -107,11 +107,17 @@ export default {
                 return;
             }
 
+            this.$Progress.start();
+
             this.deleteUser(id)
                 .then(() => {
                     this.getUsers();
+
+                    this.$Progress.finish();
                 })
                 .catch((error) => {
+                    this.$Progress.fail();
+
                     console.log(error);
                 });
         },
