@@ -98,11 +98,12 @@
                             :reduce="category => category.id"
                             multiple
                         ></v-select>
-                        <b-form-invalid-feedback
-                            v-if="hasError('categories')"
-                            v-text="getError('categories')"
-                        ></b-form-invalid-feedback>
                     </b-form-group>
+                    <p
+                        class="sm-8 invalid"
+                        v-if="hasError('categories')"
+                        v-text="getError('categories')"
+                    ></p>
                     <b-form-group
                         label="Authors"
                         label-for="authors"
@@ -116,11 +117,12 @@
                             :reduce="author => author.id"
                             multiple
                         ></v-select>
-                        <b-form-invalid-feedback
-                            v-if="hasError('authors')"
-                            v-text="getError('authors')"
-                        ></b-form-invalid-feedback>
                     </b-form-group>
+                    <p
+                        class="sm-8 invalid"
+                        v-if="hasError('authors')"
+                        v-text="getError('authors')"
+                    ></p>
                     <b-form-group
                         label="About"
                         label-for="about"
