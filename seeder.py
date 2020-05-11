@@ -8,4 +8,3 @@ class Seeder(Command):
 
     def run(self):
         User(username='admin', password='password', is_admin=True).save()
-        User(username='user', password='password', is_admin=False).save()
