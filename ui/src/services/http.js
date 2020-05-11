@@ -1,6 +1,5 @@
 // @ts-nocheck
 import axios from 'axios';
-import _ from 'lodash';
 import store from '../store';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
@@ -16,16 +15,25 @@ axios.interceptors.response.use(null, (error) => {
             description = response.statusText;
         }
 
-        if (!_.lowerCase(description).includes('missing cookie')) {
-            description = _.startCase(_.lowerCase(description));
+        // eslint-disable-next-line arrow-body-style
+        const tokenExpired = ['token', 'expired'].every((w) => {
+            return description.toLowerCase().includes(w);
+        });
+        // eslint-disable-next-line arrow-body-style
+        const missingCookie = ['missing', 'cookie'].every((w) => {
+            return description.toLowerCase().includes(w);
+        });
 
-            const message = {
-                type: 'danger',
-                description,
-            };
-
-            store.dispatch('flashMessage', message, { root: true });
+        if (tokenExpired || missingCookie) {
+            description = 'Session expired';
         }
+
+        const message = {
+            type: 'danger',
+            description,
+        };
+
+        store.dispatch('flashMessage', message, { root: true });
     }
 
     return Promise.reject(response);

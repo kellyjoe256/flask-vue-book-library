@@ -12,23 +12,31 @@ const router = new VueRouter({
     routes,
 });
 
-/* eslint-disable */
-// prettier-ignore
+/* eslint-disable no-lonely-if */
 router.beforeEach((to, from, next) => {
-  const authenticated = store.getters['auth/authenticated'];
+    const user = store.getters['auth/user'];
+    const authenticated = store.getters['auth/authenticated'];
 
-  let redirectTo = null;
-  if (!authenticated && to.meta.authRequired) {
-      redirectTo = { name: 'login' };
-  } else if (authenticated && to.name !== '404' && !to.meta.authRequired) {
-      redirectTo = { name: 'dashboard' };
-  }
+    const authRequired = to.matched.some((route) => route.meta.authRequired);
+    const adminRequired = to.matched.some((route) => route.meta.adminRequired);
 
-  if (redirectTo) {
-      return next(redirectTo);
-  }
-
-  next();
+    if (authRequired) {
+        if (!authenticated) {
+            next({ name: 'login' });
+        } else {
+            if (adminRequired && !user.is_admin) {
+                next({ name: 'dashboard' });
+            } else {
+                next();
+            }
+        }
+    } else {
+        if (authenticated) {
+            next({ name: 'dashboard' });
+        } else {
+            next();
+        }
+    }
 });
 
 export default router;

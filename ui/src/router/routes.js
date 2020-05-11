@@ -25,6 +25,12 @@ const BooksListing = () => import('@/views/admin/books/Listing');
 const BooksAdd = () => import('@/views/admin/books/Add');
 const BooksEdit = () => import('@/views/admin/books/Edit');
 
+// /admin/users
+const UsersIndex = () => import('@/views/admin/users/Index');
+const UsersListing = () => import('@/views/admin/users/Listing');
+const UsersAdd = () => import('@/views/admin/users/Add');
+const UsersEdit = () => import('@/views/admin/users/Edit');
+
 export default [
     {
         path: '/',
@@ -149,6 +155,44 @@ export default [
                         component: BooksEdit,
                         meta: {
                             authRequired: true,
+                        },
+                    },
+                ],
+            },
+            {
+                path: 'users',
+                component: UsersIndex,
+                meta: {
+                    authRequired: true,
+                    adminRequired: true,
+                },
+                children: [
+                    {
+                        path: '',
+                        name: 'users.index',
+                        component: UsersListing,
+                        meta: {
+                            authRequired: true,
+                            adminRequired: true,
+                        },
+                    },
+                    {
+                        path: 'add',
+                        name: 'users.add',
+                        component: UsersAdd,
+                        meta: {
+                            authRequired: true,
+                            adminRequired: true,
+                        },
+                    },
+                    {
+                        path: ':id/edit',
+                        props: true,
+                        name: 'users.edit',
+                        component: UsersEdit,
+                        meta: {
+                            authRequired: true,
+                            adminRequired: true,
                         },
                     },
                 ],
