@@ -13,7 +13,7 @@ def author_rules():
 ^[a-z0-9!"#$%&\'()*+,-./:;<=>?@\\^_`{|}~\[\] \t\n\r\x0b\x0c]+$
 '''.strip()
 
-    parser = reqparse.RequestParser()
+    parser = reqparse.RequestParser(bundle_errors=True)
     parser.add_argument('last_name', required=True,
                         type=inputs.regex(str_regex, re.IGNORECASE),
                         trim=True, help='Last name is required',

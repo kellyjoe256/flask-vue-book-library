@@ -6,7 +6,7 @@ from app.helpers import is_admin, PaginationFormatter
 
 
 def user_rules():
-    parser = reqparse.RequestParser()
+    parser = reqparse.RequestParser(bundle_errors=True)
     parser.add_argument('username', required=True,
                         type=inputs.regex(r'^[a-zA-Z0-9]+$'),
                         trim=True, help='Username is required', location='json')

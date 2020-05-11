@@ -13,7 +13,7 @@ def book_rules():
 ^[a-z0-9!"#$%&\'()*+,-./:;<=>?@\\^_`{|}~\[\] \t\n\r\x0b\x0c]+$
 '''.strip()
 
-    parser = reqparse.RequestParser()
+    parser = reqparse.RequestParser(bundle_errors=True)
     parser.add_argument('isbn', required=True, trim=True,
                         help='ISBN is required', location='json')
     parser.add_argument('title', required=True,

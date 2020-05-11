@@ -7,7 +7,7 @@ from app.helpers import PaginationFormatter
 
 
 def category_rules():
-    parser = reqparse.RequestParser()
+    parser = reqparse.RequestParser(bundle_errors=True)
     parser.add_argument('name', required=True,
                         type=inputs.regex(r'^[\w ]+$', re.IGNORECASE),
                         trim=True, help='Name is required', location='json')

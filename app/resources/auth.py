@@ -8,7 +8,7 @@ from app.models import User
 
 
 class LoginAPI(Resource):
-    parser = reqparse.RequestParser()
+    parser = reqparse.RequestParser(bundle_errors=True)
     parser.add_argument('username', required=True, trim=True,
                         help='Username is required')
     parser.add_argument('password', required=True,
