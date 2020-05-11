@@ -52,7 +52,7 @@ def test_that_users_updated_correctly(client):
 
     # update created user
     response_data = convert_to_dict(response.data)
-    data['password'] = 'new_password'
+    data['username'] = 'new_username'
     response = client.put(
         '{}/{}'.format(base_route, response_data.get('id')), json=data)
 

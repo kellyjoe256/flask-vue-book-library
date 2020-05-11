@@ -8,7 +8,7 @@ from app.helpers import is_admin, PaginationFormatter
 def user_rules():
     parser = reqparse.RequestParser(bundle_errors=True)
     parser.add_argument('username', required=True,
-                        type=inputs.regex(r'^[a-zA-Z0-9]+$'),
+                        type=inputs.regex(r'^[a-zA-Z0-9_]+$'),
                         trim=True, help='Username is required', location='json')
     parser.add_argument('password', required=True,
                         type=inputs.regex(r'^[A-Za-z@!~#$%^&*()-+\d]{8,}$'),
@@ -63,7 +63,15 @@ class UserAPI(Resource):
     def put(self, id):
         user = User.find_or_fail(id)
 
+        self.parser.replace_argument('password',
+                                     type=inputs.regex(
+                                         r'^[A-Za-z@!~#$%^&*()-+\d]{8,}$'),
+                                     help='Password is required', location='json')
+
         data = self.parser.parse_args()
+        if not data.get('password'):
+            data.pop('password', None)
+
         for key, value in data.items():
             if key == 'username' and self.check_for_username(id, value):
                 return dict(message='Username already exists'), 409
