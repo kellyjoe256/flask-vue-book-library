@@ -13,16 +13,25 @@ A book library application built with flask and vue.
 #### Backend
 
 ```bash
+# setup virtual environment
 $ python -m venv venv
-# or venv\Scripts\activate on windows
-$ . venv/bin/activate 
+
+# activate virtual environment
+$ . venv/bin/activate # or venv\Scripts\activate on windows
+
+# install dependencies
 $ pip install -r requirements.txt
+
 # run tests
 $ python -m py.test -x
+
 # setup database
 $ python manage.py db upgrade
+
 # seed the database with some records
 $ python manage.py seed
+
+# run application
 $ python manage.py runserver # http://localhost:5000
 ```
 
@@ -32,7 +41,11 @@ $ python manage.py runserver # http://localhost:5000
 
 ```bash
 $ cd ui
+
+# install dependencies
 $ npm install
+
+# run and test in the browser
 $ npm run serve # http://localhost:8080
 ```
 
