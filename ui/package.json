@@ -13,7 +13,7 @@
         "bootstrap-vue": "^2.13.1",
         "core-js": "^3.6.4",
         "lodash": "^4.17.21",
-        "moment": "^2.25.3",
+        "moment": "^2.29.4",
         "showdown": "^1.9.1",
         "vue": "^2.6.11",
         "vue-meta": "^2.3.3",
